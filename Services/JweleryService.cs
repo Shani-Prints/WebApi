@@ -1,6 +1,8 @@
 using WebApi.Services;
 using WebApi.Models;
 using WebApi.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
+
 namespace WebApi.Services
 {
     public class JweleryService : IJewelryService
@@ -42,6 +44,13 @@ namespace WebApi.Services
 
         public int Count { get => jewelryList.Count(); }
     }
+    public static class JweleryServiceHelper
+    {
+        public static void AddJweleryService(this IServiceCollection services)
+        {
+            services.AddSingleton<IJewelryService, JweleryService>();
 
+        }
+    }
 
 }
