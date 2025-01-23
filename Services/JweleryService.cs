@@ -22,6 +22,7 @@ namespace WebApi.Services
         public Jewelry Get(int id) => jewelryList.FirstOrDefault(j => j.Id == id);
         public void Add(Jewelry jewelry)
         {
+              
             jewelry.Id = nextId++;
             jewelryList.Add(jewelry);
         }
