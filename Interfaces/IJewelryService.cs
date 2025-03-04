@@ -1,16 +1,21 @@
-using System.Collections.Generic;
-using System.Linq;
 using WebApi.Models;
+
 namespace WebApi.Interfaces
 {
-
     public interface IJewelryService
     {
-        List<Jewelry> GetAll();
-        Jewelry Get(int id);
-        void Add(Jewelry jewelry);
+        List<Jewelry>? GetAll();
+
+        Jewelry? Get(int id);
+
+        void Add(Jewelry jewelry, int userId);  
+
         void Delete(int id);
-        void Update(Jewelry jewelry);
+
+        void Update(Jewelry jewelry,int userId);
+
         int Count { get; }
+
+        void DeleteJewelryByUserId(int userId);
     }
 }

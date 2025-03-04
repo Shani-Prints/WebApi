@@ -1,32 +1,52 @@
+
 const uri = '/jewelry';
 let jewelryItems = [];
+function getToken() {
+    return localStorage.getItem("token");
+}
 
+// פונקציה להחזרת פריטים מהממשק
 function getItems() {
-    fetch(uri)
-        .then(response => response.json())
+    const token = getToken();
+    fetch(uri, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': token
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch items');
+            }
+            return response.json();
+        })
         .then(data => _displayItems(data))
         .catch(error => console.error('Unable to get items.', error));
 }
 
+// פונקציה להוספת פריט חדש
 function addItem() {
+    const token = getToken();  // קבלת ה-token
     const addNameTextbox = document.getElementById('add-name');
     const addPriceTextbox = document.getElementById('add-price');
     const addCategoryTextbox = document.getElementById('add-category');
 
     const item = {
         name: addNameTextbox.value.trim(),
-        price: parseFloat(addPriceTextbox.value.trim()),
+        price: parseFloat(addPriceTextbox.value),
         category: addCategoryTextbox.value.trim()
     };
 
     fetch(uri, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(item)
-        })
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': token
+        },
+        body: JSON.stringify(item)
+    })
         .then(response => response.json())
         .then(() => {
             getItems();
@@ -35,16 +55,32 @@ function addItem() {
             addCategoryTextbox.value = '';
         })
         .catch(error => console.error('Unable to add item.', error));
+    closeInputAdd()
+
+}
+function toggleAddForm() {
+    const addForm = document.getElementById('addForm');
+    if (addForm.style.display === 'none' || addForm.style.display === '') {
+        addForm.style.display = 'block';
+    } else {
+        addForm.style.display = 'none';
+    }
 }
 
+// פונקציה למחיקת פריט
 function deleteItem(id) {
+    const token = getToken();
     fetch(`${uri}/${id}`, {
-            method: 'DELETE'
-        })
+        method: 'DELETE',
+        headers: {
+            'Authorization': token
+        }
+    })
         .then(() => getItems())
         .catch(error => console.error('Unable to delete item.', error));
 }
 
+// פונקציה להציג את טופס העריכה
 function displayEditForm(id) {
     const item = jewelryItems.find(item => item.id === id);
 
@@ -55,23 +91,26 @@ function displayEditForm(id) {
     document.getElementById('editForm').style.display = 'block';
 }
 
+// פונקציה לעדכון פריט
 function updateItem() {
+    const token = getToken();
     const itemId = document.getElementById('edit-id').value;
     const item = {
         id: parseInt(itemId, 10),
         name: document.getElementById('edit-name').value.trim(),
-        price: parseFloat(document.getElementById('edit-price').value.trim()),
+        price: parseFloat(document.getElementById('edit-price').value),
         category: document.getElementById('edit-category').value.trim()
     };
 
     fetch(`${uri}/${itemId}`, {
-            method: 'PUT',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(item)
-        })
+        method: 'PUT',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': token
+        },
+        body: JSON.stringify(item)
+    })
         .then(() => getItems())
         .catch(error => console.error('Unable to update item.', error));
 
@@ -79,17 +118,22 @@ function updateItem() {
     return false;
 }
 
+// פונקציה לסגירת טופס העריכה
 function closeInput() {
     document.getElementById('editForm').style.display = 'none';
 }
-
-function _displayCount(itemCount) {
-    const name = (itemCount === 1) ? 'jewel' : 'jewels';
-    document.getElementById('counter').innerText = `${itemCount} ${name}`;
+function closeInputAdd() {
+    document.getElementById('addForm').style.display = 'none';
 }
 
+// פונקציה לעדכון מונה הפריטים
+function _displayCount(itemCount) {
+    const name = (itemCount === 1) ? 'jewelry item' : 'jewelry items';
+}
+
+// פונקציה להצגת המוצרים בטבלה
 function _displayItems(data) {
-    const tBody = document.getElementById('jewelry');
+    const tBody = document.getElementById('jewelryItems');
     tBody.innerHTML = '';
 
     _displayCount(data.length);
@@ -125,3 +169,17 @@ function _displayItems(data) {
 
     jewelryItems = data;
 }
+
+function initPage() {
+    const token = getToken();
+    if (!token) {
+        // אם אין טוקן, הפניה לדף הלוגין
+        window.location.href = 'login.html';
+    }
+    else
+        document.body.classList.add('show');
+
+}
+
+// קריאה לפונקציה בעת טעינת הדף
+document.addEventListener('DOMContentLoaded', initPage);
