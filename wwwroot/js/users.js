@@ -18,6 +18,10 @@ function getItems() {
     checkUserRole();
     const token = getToken();
     let userUri = userRole === 'Admin' ? '/User/GetAll' : '/User/Get';
+    if (!token || !isTokenValid(token)) {
+        window.location.href = 'login.html'; // הפניה ללוגין אם הטוקן לא תקף
+        return Promise.reject("Token expired or missing");
+    }
 
     fetch(userUri, {
         method: 'GET',
@@ -46,7 +50,7 @@ function toggleAddForm() {
 
 // פונקציה להוספת משתמש
 function addUser() {
-    const token = getToken(); 
+    const token = getToken();
     const addUsername = document.getElementById('add-username').value.trim();
     const addPassword = document.getElementById('add-password').value.trim();
     const addEmail = document.getElementById('add-email').value.trim();
@@ -63,7 +67,7 @@ function addUser() {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': token 
+            'Authorization': token
         },
         body: JSON.stringify(newUser)
     })
@@ -86,11 +90,11 @@ function closeInputAdd() {
 
 // פונקציה למחיקת משתמש
 function deleteUser(id) {
-    const token = getToken();  
+    const token = getToken();
     fetch(`${uri}/${id}`, {
         method: 'DELETE',
         headers: {
-            'Authorization': token 
+            'Authorization': token
         }
     })
         .then(() => getItems())
@@ -205,23 +209,32 @@ function isTokenValid(token) {
 
     try {
         const payload = JSON.parse(atob(token.split(".")[1])); 
-        const exp = payload.exp * 1000;
-        console.log(exp);
+        const exp = payload.exp * 1000; 
         return Date.now() < exp; 
     } catch (e) {
-        return false; 
+        return false;
     }
 }
+
+const logOut = () => {
+    localStorage.removeItem("token");
+    initPage();
+}
+
 function initPage() {
-    const token = getToken(); 
+    const token = getToken();
     console.log(isTokenValid(getToken()));
-    if (!isTokenValid(token)||!token) {
+    if (!token || !isTokenValid(token)) {
         // אם אין טוקן או שפג תוקפו, הפניה לדף הלוגין
         window.location.href = 'login.html';
     }
     else
-    document.body.classList.add('show');
+        document.body.classList.add('show');
 }
+
+// קריאה לפונקציה בעת טעינת הדף
+document.addEventListener('DOMContentLoaded', initPage);
+
 
 // קריאה לפונקציה בעת טעינת הדף
 document.addEventListener('DOMContentLoaded', initPage);

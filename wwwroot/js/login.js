@@ -29,7 +29,6 @@ function login(event) {
             localStorage.setItem("token", "Bearer " + token);
             console.log(localStorage.getItem("token"));
 
-            // פענוח ה-token ושמירה בפרטי המשתמש
             const userType = getUserTypeFromToken(token);
 
             // הצגת כפתורים בהתאם לסוג המשתמש
@@ -49,8 +48,8 @@ function login(event) {
 // פונקציה לחילוץ סוג המשתמש מה-token (JWT)
 function getUserTypeFromToken(token) {
     const payload = token.split('.')[1];
-    const decodedPayload = JSON.parse(atob(payload)); // פענוח ה-payload
-    return decodedPayload.type; // החזרת סוג המשתמש (מנהל או רגיל)
+    const decodedPayload = JSON.parse(atob(payload)); 
+    return decodedPayload.type; 
 }
 
 // הצגת כפתורים שונים לפי סוג המשתמש
@@ -66,7 +65,6 @@ function showButtonsBasedOnRole(userType) {
         userButtons.style.display = "block";
     }
 }
-
 
 function products() {
     window.location.href = "products.html";
@@ -85,16 +83,3 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-// function isTokenValid() {
-//     const token = localStorage.getItem("jwt");
-//     if (!token) return false;
-
-//     try {
-//         const payload = JSON.parse(atob(token.split(".")[1]));
-//         const exp = payload.exp * 1000;
-//         console.log(exp);
-//         return Date.now() < exp;
-//     } catch (e) {
-//         return false;
-//     }
-// }

@@ -169,10 +169,23 @@ function _displayItems(data) {
 
     jewelryItems = data;
 }
-
+const logOut = () => {
+    localStorage.removeItem("token");
+    initPage();
+}
+function isTokenValid(token) {
+    if (!token) return false;
+    try {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        const exp = payload.exp * 1000;
+        return Date.now() < exp;
+    } catch (e) {
+        return false;
+    }
+}
 function initPage() {
     const token = getToken();
-    if (!token) {
+    if (!token || !isTokenValid(token)) {
         // אם אין טוקן, הפניה לדף הלוגין
         window.location.href = 'login.html';
     }
