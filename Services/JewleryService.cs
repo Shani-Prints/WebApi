@@ -45,18 +45,6 @@ namespace WebApi.Services
             saveToFile();
         }
 
-        // public void Update(Jewelry jewelry, int UserId)
-        // {
-        //     var index = jewelryList.FindIndex(j => j.Id == jewelry.Id);
-        //     if (index == -1)
-        //         return;
-
-        //     jewelry.UserId = UserId;
-        //     jewelryList[index] = jewelry;
-        //     saveToFile();
-
-        // }
-
         public void Update(Jewelry jewelry, int UserId)
         {
             if (jewelryList == null)
@@ -83,18 +71,6 @@ namespace WebApi.Services
         public int Count { get => jewelryList?.Count() ?? 0; }
 
 
-        //     public void DeleteJewelryByUserId(int userId)
-        //     {
-        //         var itemsToRemove = jewelryList?.Where(jewelry => jewelry.UserId == userId).ToList();
-        //         {
-        //             foreach (var item in itemsToRemove)
-        //             {
-        //                 jewelryList?.Remove(item);
-        //             }
-        //             saveToFile();
-        //         }
-        //     }
-        // }
         public void DeleteJewelryByUserId(int userId)
         {
             var itemsToRemove = jewelryList?.Where(jewelry => jewelry.UserId == userId).ToList();

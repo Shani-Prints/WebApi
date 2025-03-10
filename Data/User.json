@@ -166,5 +166,12 @@
         "Password": "Tp",
         "Email": "t0548545252@gmail.com",
         "Role": "User"
+    },
+    {
+        "Id": 26,
+        "Username": "Michal",
+        "Password": "820",
+        "Email": "a@aa",
+        "Role": "User"
     }
 ]
